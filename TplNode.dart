@@ -26,7 +26,7 @@ abstract class SyntaxNode {
 
 class TextNode extends SyntaxNode {
   String _content;
-  TextNode(String this._content):super(false);
+  TextNode(String this._content);
   String render(){
     return _content;
   }
@@ -39,9 +39,9 @@ class CommentNode extends SyntaxNode{
 }
 
 class ValueNode extends SyntaxNode {
-  Object _variable;
+  String _variable;
 
-  ValueNode(Object this._variable);
+  ValueNode(String this._variable);
 
   String render(DataContext context){
     return context.value(_variable);

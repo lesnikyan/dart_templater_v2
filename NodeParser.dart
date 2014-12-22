@@ -17,7 +17,9 @@ abstract class NodeParser {
   /**
    * parse lexeme and create appropriate node
    */
-  SyntaxNode getNode(Lexeme lex);
+  SyntaxNode getNode(Lexeme lex){
+    return null;
+  }
 }
 
 /**
@@ -33,9 +35,28 @@ class SimpleNodeParser extends NodeParser {
   }
 }
 
+/**
+ * for variables: name, user.name, ets..
+ */
+class VarNodeParser extends NodeParser {
+
+  RegExp _rule = new RegExp(r'^[a-zA-Z_]\w*(\.[a-zA-Z_]\w*)*$');
+
+  bool check(Lexeme lex){
+    return _rule.hasMatch(lex.content);
+  }
+
+  SyntaxNode getNode(Lexeme lex){
+    return new ValueNode(lex.content);
+  }
+}
+
+/**
+ * for end of block
+ */
 class CloseBlockParser {
   bool check(Lexeme lex){
-    return lex.content.trim() == '{#/#}';
+    return lex.content.trim() == '/';
   }
 }
 
@@ -123,6 +144,7 @@ class ConditionNodeParser extends NodeParser {
     for(Match m in logicOperators){
       logics.add(m.group(1));
     }
+    // dirty and brutally prevent expressions with both of logic operators (not sure tmpltr need same case)
     if(logics.contains('&&') && logics.contains('||')){
       throw new Expression('NodeParser: too complicated logic (&& and || operators in expression)');
     }

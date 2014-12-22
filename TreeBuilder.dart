@@ -16,7 +16,9 @@ class TreeBuilder {
     _parsers.addAll([
         // first - complicated cases
         new CycleNodeParser(), new ConditionNodeParser(),
-        // in the end - simplest
+        // value case
+        new VarNodeParser(),
+        // in the end - simplest/text
         new SimpleNodeParser()]);
   }
 
@@ -24,6 +26,10 @@ class TreeBuilder {
     SyntaxTree tree;
     List<BlockNode> curParents = [tree];
     for(lex in lexemes){
+      if(lex is TextLexeme){
+        curParents.last.add(new TextNode(lex.content));
+        continue;
+      }
       // if close tag lexeme
       if(_closeParser.check(lex)){
         curParents.removeLast();
@@ -33,11 +39,13 @@ class TreeBuilder {
       for(parser in _parsers){
         if(parser.check(lex)){
           SyntaxNode node = parser.getNode(lex);
+          continue;
         }
         // add to parent if container:
         curParents.last.add(node);
         if(node.isContainer){
           curParents.add(node);
+          continue;
         }
       }
     }
