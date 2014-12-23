@@ -12,12 +12,14 @@ class CycleNode extends BlockNode {
   String render(DataContext context){
     StringBuffer res = new StringBuffer();
     List list = context.value(_listName);
+    context.addSubData();
     for(int i=0; i < list.length; ++i){
       context.add('index', i);  // experimental part, var index with current iteration number
       context.add(_varName, list[i]); // value of current position
       res.write(super.render(context));
-      context.remove(['index', _varName]);
+      //context.remove(['index', _varName]);
     }
+    context.removeSubData();
     return res.toString();
   }
 

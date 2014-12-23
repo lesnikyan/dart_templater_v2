@@ -1,6 +1,7 @@
 //part of dart_templater;
 
 import 'DataContext.dart';
+import 'services.dart';
 
 class TplNode {
 
@@ -21,13 +22,13 @@ class TplNode {
 abstract class SyntaxNode {
   bool isContainer = false;
   SyntaxNode([this.isContainer]);
-  String render();
+  String render(DataContext context);
 }
 
 class TextNode extends SyntaxNode {
   String _content;
   TextNode(String this._content);
-  String render(){
+  String render(DataContext context){
     return _content;
   }
 }
@@ -44,6 +45,7 @@ class ValueNode extends SyntaxNode {
   ValueNode(String this._variable);
 
   String render(DataContext context){
+    p("render[_variable] = *${context.value(_variable)}*");
     return context.value(_variable);
   }
 }
@@ -59,8 +61,10 @@ abstract class BlockNode extends SyntaxNode {
 
   String render(DataContext context){
     StringBuffer res = new StringBuffer();
-    for(node in _subNodes){
-      res.write(node.render(context));
+    for(SyntaxNode node in _subNodes){
+      res.write(('*' +
+      (node.render(context).toString())
+      + '*'));
     }
     return res.toString();
   }
@@ -72,6 +76,6 @@ class FunctionNode extends BlockNode {
   String render();
 }
 
-class SyntaxTree extends BlockNode{
+class TreeNode extends BlockNode{
 
 }

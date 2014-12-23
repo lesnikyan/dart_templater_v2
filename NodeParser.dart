@@ -4,6 +4,7 @@ import 'TplNode.dart';
 import 'Condition.dart';
 import 'ConditionNode.dart';
 import 'CycleNode.dart';
+import 'services.dart';
 
 /**
  * just base superclass
@@ -64,18 +65,19 @@ class CloseBlockParser {
  * parser of cycle (for) lexeme
  */
 class CycleNodeParser extends NodeParser {
+
   bool check(Lexeme lex){
-    RegExp rgx = new RegExp(r'^\s+for\s+\w+\s+in\s+\w+');
+    RegExp rgx = new RegExp(r'^\s*for\s+\w+\s+in\s+[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*\s*$');
     return rgx.hasMatch(lex.content);
   }
 
   SyntaxNode getNode(Lexeme lex){
-    RegExp rgx = new RegExp(r'^\s+for\s+(\w+)\s+in\s+(\w+)\s+$');
-    Match m = rgx.firstMatch();
+    RegExp rgx = new RegExp(r'^\s*for\s+(\w+)\s+in\s+([\w\.]+)\s*$');
+    Match m = rgx.firstMatch(lex.content);
     String varName = m.group(1);
     String listName = m.group(2);
-
-    return new CycleNode();
+    p("Cycle Parser. getNode: $varName, $listName");
+    return new CycleNode(listName, varName);
   }
 }
 
@@ -89,10 +91,14 @@ class ConditionNodeParser extends NodeParser {
   String _multiExprRule;
   String _logicOper;
 
+  ConditionNodeParser(){
+    _init();
+  }
+
   void _init(){
     _simpleExpr = new RegExp("^$_simpleExprRule\$");
-    _multiExprRule = "^$_simpleExprRule(\\s*$logicOper\\s*$_simpleExprRule)+\$";
     _logicOper = r'(&&|\|\|)';
+    _multiExprRule = "^$_simpleExprRule(\\s*$_logicOper\\s*$_simpleExprRule)+\$";
   }
 
   bool check(Lexeme lex){

@@ -16,7 +16,7 @@ class Operand {
   }
 
   String toString(){
-    return "const: ${_isConst}{value: (${_value.runtimeType})$_value, name: $_name}";
+    return "{const = ${_isConst}; value: (${_value.runtimeType})$_value, name: $_name}";
   }
 }
 
@@ -30,6 +30,10 @@ class OneValueCondition {
 
   bool value(DataContext context){
     return _oper.value(context);
+  }
+
+  String toString(){
+    return "OneValueCondition($_oper)";
   }
 }
 
@@ -56,6 +60,10 @@ class SimpleCondition {
       case '>' : return x > y;
     }
   }
+
+  String toString(){
+    return "SimpleCondition($left $operator $right)";
+  }
 }
 
 //class ConditionOperator {
@@ -67,7 +75,10 @@ class MultiCondition extends Condition {
   String _logicOperator = '&&';
   List<String> _validOperators = ['&&', '||'];
 
-  MultiCondition(String _logicOperator, [List<SimpleCondition> this._subConditions]){
+  MultiCondition(String _logicOperator, [List<SimpleCondition> subConditions]){
+    if(subConditions is List){
+      _subConditions = subConditions;
+    }
     if(! _validOperators.contains(_logicOperator)){
       throw new Exception('MultiCondition: trying to use incorrect logic operator');
     }
@@ -77,10 +88,10 @@ class MultiCondition extends Condition {
     _subConditions.add(cond);
   }
 
-  bool value(){
+  bool value(DataContext context){
     bool res = false;
     for(SimpleCondition cond in _subConditions){
-      bool sub = cond.value();
+      bool sub = cond.value(context);
       if(_logicOperator == '&&' && ! sub){  // false with 1 false
         return false;
       } else if(_logicOperator == '||' && sub){ // true with 1 true
@@ -89,5 +100,13 @@ class MultiCondition extends Condition {
       res = sub;    // && -> true if no one false; || -> false if no one true
     }
     return res;
+  }
+
+  String toString(){
+    StringBuffer res = new StringBuffer("operator ($_logicOperator) :\n");
+    for(SimpleCondition cond in _subConditions){
+      res.writeln(cond.toString());
+    }
+    return res.toString();
   }
 }

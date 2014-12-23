@@ -14,4 +14,5 @@ Tmplr can:
 4. handle simple var names and fields/getters of objects: {title} {user.name} {data.users.students.first.properties.name} // TODO
 5. have comments: {# some comment }
 6. Change pattern of includes after running of Tmpltr: from {name} => <%name%> // TODO
-7. running methods - in possible plans. // TODO
+7. In each block all parent values exists, and every value requested by variable name will be returned from last possible definition.
+8. running methods - in possible plans. // TODO

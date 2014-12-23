@@ -9,9 +9,11 @@ void main(){
   //Template tpl = new Templater.fromString(template);
   tpl.put('title', 'Template usage');
   tpl.put({'test' : '123'});
-  tpl.put('page', new Page());
+  tpl.put('page.name', 'Test page');
+  tpl.put('testWords', ['word_1', 'word_2', 'word_3', 'word_4']);
   //
   String html = tpl.render();
+  print(html);
 }
 
 class Page{
