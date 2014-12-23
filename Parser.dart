@@ -36,7 +36,7 @@ class Parser {
         if(curIndex < len - endXLen &&  src.substring(curIndex, curIndex + endXLen) == endX){
           // end tag
           lexeme += src.substring(curIndex, curIndex + endXLen);
-          p("$lexeme : ${lexeme.length}");
+          //p("$lexeme : ${lexeme.length}");
           res.add(new TplLexeme(lexeme.substring(startXLen, lexeme.length - endXLen).trim())); // save tpl lexeme // .substring(startXLen, lexeme.length - endXLen - 1)
           curIndex += endXLen;
           lexeme = ""; // clear tpl lexeme, start new lexeme

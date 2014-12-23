@@ -45,7 +45,7 @@ class ValueNode extends SyntaxNode {
   ValueNode(String this._variable);
 
   String render(DataContext context){
-    p("render[_variable] = *${context.value(_variable)}*");
+  //  p("render[_variable] = *${context.value(_variable)}*");
     return context.value(_variable);
   }
 }
@@ -62,9 +62,7 @@ abstract class BlockNode extends SyntaxNode {
   String render(DataContext context){
     StringBuffer res = new StringBuffer();
     for(SyntaxNode node in _subNodes){
-      res.write(('*' +
-      (node.render(context).toString())
-      + '*'));
+      res.write(node.render(context).toString());
     }
     return res.toString();
   }

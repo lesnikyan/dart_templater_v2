@@ -43,7 +43,7 @@ class Templater {
       if(!file.existsSync()){
         throw new Exception("No tpl file found: ${file.absolute}");
       }
-      p(file.absolute);
+     // p(file.absolute);
       _encoding = Encoding.getByName('utf-8');
       tplText = file.readAsStringSync(encoding: _encoding);
     } catch (e, s) {
@@ -60,14 +60,14 @@ class Templater {
       data = {};
     }
     try{
-      p(tplText);
-      p("**************************************");
+    //  p(tplText);
+    //  p("**************************************");
       // parse source to lexeme list
       parser = new Parser();
       _context = new DataContext(data);
       List<Lexeme> lexemes = lexemeList(tplText);
       _tplTree = _builder.build(lexemes);
-      print("isTree = ${_tplTree is TreeNode}");
+    //  print("isTree = ${_tplTree is TreeNode}");
 //      for(Lexeme lex in lexemes){
 //        //p("[${lex.type.toString()}:${lex.content}]");
 //        p(lex.content);

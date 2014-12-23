@@ -76,7 +76,7 @@ class CycleNodeParser extends NodeParser {
     Match m = rgx.firstMatch(lex.content);
     String varName = m.group(1);
     String listName = m.group(2);
-    p("Cycle Parser. getNode: $varName, $listName");
+  //  p("Cycle Parser. getNode: $varName, $listName");
     return new CycleNode(listName, varName);
   }
 }

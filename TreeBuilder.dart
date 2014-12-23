@@ -28,7 +28,7 @@ class TreeBuilder {
     TreeNode tree = new TreeNode();
     List<BlockNode> curParents = [tree];
     for(Lexeme lex in lexemes){
-      p("Builder 1): ${curParents} -=${lex.content.replaceAll(new RegExp(r'\n'), ' \\ ')}=- ");
+    //  p("Builder 1): ${curParents} -=${lex.content.replaceAll(new RegExp(r'\n'), ' \\ ')}=- ");
       // if no tag lexeme
       if(lex is TextLexeme){
         curParents.last.add(new TextNode(lex.content));
@@ -36,7 +36,7 @@ class TreeBuilder {
       }
       // if close tag lexeme
       if(_closeParser.check(lex)){
-        p("Close Block: ${lex.content}");
+    //    p("Close Block: ${lex.content}");
         curParents.removeLast();
         continue;
       }
@@ -45,13 +45,13 @@ class TreeBuilder {
       for(NodeParser parser in _parsers){
         if(parser.check(lex)){
           SyntaxNode node = parser.getNode(lex);
-          p("parserNode.check() -> node: ${node}");
+       //   p("parserNode.check() -> node: ${node}");
           // add to parent if container:
           curParents.last.add(node);
           if(node.isContainer){
             curParents.add(node);
           }
-          continue;
+          break;
         }
       }
       //curParents.last.add(new TextNode(lex.content)); // if we want show all uncaught cases
