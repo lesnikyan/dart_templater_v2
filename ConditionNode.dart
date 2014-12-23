@@ -20,6 +20,7 @@ class ConditionNode extends BlockNode {
 //  }
 
   bool _validate(DataContext context){
+   // print("ConditionNode. cond: $_cond");
     return _cond.value(context);
   }
 

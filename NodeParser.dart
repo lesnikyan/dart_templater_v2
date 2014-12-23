@@ -66,9 +66,10 @@ class CloseBlockParser {
  */
 class CycleNodeParser extends NodeParser {
 
+  RegExp _rgx = new RegExp(r'^\s*for\s+\w+\s+in\s+[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*\s*$');
+
   bool check(Lexeme lex){
-    RegExp rgx = new RegExp(r'^\s*for\s+\w+\s+in\s+[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*\s*$');
-    return rgx.hasMatch(lex.content);
+    return _rgx.hasMatch(lex.content);
   }
 
   SyntaxNode getNode(Lexeme lex){
@@ -86,6 +87,9 @@ class CycleNodeParser extends NodeParser {
  */
 class ConditionNodeParser extends NodeParser {
 
+  RegExp _checkExpr = new RegExp(r'^\s*if\s+\w+');
+  RegExp _oneVarExpr = new RegExp(r'^[\w][\w\.]*$');
+  RegExp _oneExpr = new RegExp(r'^[^|&]+$');
   String _simpleExprRule = r'([^=<>!&\|]+)\s+(==|!=|>|<|>=|<=)\s+([^=<>!&\|]+)';
   RegExp _simpleExpr;
   String _multiExprRule;
@@ -99,47 +103,55 @@ class ConditionNodeParser extends NodeParser {
     _simpleExpr = new RegExp("^$_simpleExprRule\$");
     _logicOper = r'(&&|\|\|)';
     _multiExprRule = "^$_simpleExprRule(\\s*$_logicOper\\s*$_simpleExprRule)+\$";
+    _multiExprRule = "^[^|&]+(\\s*$_logicOper\\s*[^|&]+)+\$";
   }
 
   bool check(Lexeme lex){
-    return false;
+    return _checkExpr.hasMatch(lex.content);
   }
 
   SyntaxNode getNode(Lexeme lex){
 
-    // 1. one value operator
-    String expr = lex.content.trim();
-    RegExp oneVarExpr = new RegExp(r'^[a-zA-Z_]\w+$');
-    if(oneVarExpr.hasMatch(expr)){
-      return new ConditionNode(
-          new OneValueCondition(getOperand(expr))
-      );
-    }
+    String syntaxPrefix = "if";
+    String expr = lex.content.trim().substring(syntaxPrefix.length).trim();
+   // p("ConditionNodeParser. expr: $expr");
 
-    // 2. bool expression
-    //RegExp simpleExpr = new RegExp(r'^([a-zA-Z_]\w+|[0-9\.]+|"[^"]+")\s+(==|!=|>|<|>=|<=)\s+([a-zA-Z_]\w+)$');
-    if(_simpleExpr.hasMatch(expr)){
+    if(_oneExpr.hasMatch(expr)){
+     // p("ConditionNodeParser._oneExpr");
       return new ConditionNode(
-          getSimpleCondition(expr)
+          getOneExprCondition(expr)
       );
+     // return getOneExprCondition(expr);
     }
-
     // 3. multiexpression with pairs of operators:  a < 10 && a > 5; age >= 20 || name == 'Vasya'
 
     RegExp multiExpr = new RegExp(_multiExprRule); //??
     if(multiExpr.hasMatch(expr)){
       return new ConditionNode(getMultiCondition(expr));
     }
-
+   // p("ConditionParser: no matches");
     return null;
   }
 
-  Condition getSimpleCondition(String expr){
+  SimpleCondition getOneExprCondition(String expr){
+    // 1. one value operator
+    if(_oneVarExpr.hasMatch(expr)){
+      //  p('ConditionNodeParser: OneValue');
+      return new OneValueCondition(getOperand(expr));
+    }
+
+    // 2. bool expression
+    if(_simpleExpr.hasMatch(expr)){
+      return getSimpleExpressionCondition(expr);
+    }
+  }
+
+  SimpleCondition getSimpleExpressionCondition(String expr){
     Match m = _simpleExpr.firstMatch(expr);
     Operand left = getOperand(m.group(1));
     Operand right = getOperand(m.group(3));
     String _operator = m.group(2);
-    return new SimpleCondition(_operator, left, right);
+    return new SimpleExpressionCondition(_operator, left, right);
   }
 
   Condition getMultiCondition(String expr){
@@ -161,7 +173,7 @@ class ConditionNodeParser extends NodeParser {
     //p("paist len = ${pairs.length}");
     MultiCondition multiCond = new MultiCondition(logics[0]);
     for(var subExpr in pairs){
-      multiCond.addCondition( getSimpleCondition(subExpr));
+      multiCond.addCondition( getOneExprCondition(subExpr));
     };
     return multiCond;
   }

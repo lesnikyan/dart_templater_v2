@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>{#title#}</title>
+	<title>{title}</title>
 </head>
 <body>
-<h1>{#page.name#}</h1>
+<h1>{page.name}</h1>
 <div>
-	{#test#}
+	{test}
 </div>
-{#for word in testWords#}
+{for word in testWords}
 <div>
-	{#index#} ) {# word #}
+	{index} ) {word}
 </div>
-{#/#}
+{/}
+{if true}
+	<div>tested one true</div>
+{/}
+{if conNum > 10}
+	<div>tested simple condition</div>
+{/}
+{if conNum > 10 && 10 < 20 && true}
+	<div>tested simple condition</div>
+{/}
+{if 100 > 10}
+	<div>tested num:num condition</div>
+{/}
+<div>after conditions</div>
+{title}
 </body>
 </html>

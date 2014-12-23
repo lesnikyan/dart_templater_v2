@@ -2,8 +2,8 @@
 import 'services.dart';
 
 class Parser {
-  String startX = '{#'; // chars open tag: {tag content ...
-  String endX = '#}';   // chars close tag: ... tag content}
+  String startX = '{'; // chars open tag: {tag content ...
+  String endX = '}';   // chars close tag: ... tag content}
   Strng tagShield = '\\'; // makes next placed chars open tag unavailable: \{not a tag}
 
 //  Parser(String tpl) {
@@ -25,7 +25,7 @@ class Parser {
     String lexeme = "";
 
     while(curIndex < len){
-      if(res.length > 20) break; // DEBUG ONLY
+    //  if(res.length > 20) break; // DEBUG ONLY
 
     //  bool isEnd = false;
     //  bool isStart = false;

@@ -24,7 +24,13 @@ abstract class Condition {
   bool value(DataContext context);
 }
 
-class OneValueCondition {
+class SimpleCondition extends Condition {
+  bool value(DataContext context){
+    return false;
+  }
+}
+
+class OneValueCondition extends SimpleCondition {
   Operand _oper;
   OneValueCondition(Operand this._oper);
 
@@ -37,12 +43,12 @@ class OneValueCondition {
   }
 }
 
-class SimpleCondition {
+class SimpleExpressionCondition extends SimpleCondition {
   // types
   String operator;
   Operand left;
   Operand right;
-  SimpleCondition(String this.operator, Operand this.left, Operand this.right);
+  SimpleExpressionCondition(String this.operator, Operand this.left, Operand this.right);
 
   bool value(DataContext context){
     var x = left.value(context); // left operand
@@ -66,9 +72,6 @@ class SimpleCondition {
   }
 }
 
-//class ConditionOperator {
-//
-//}
 
 class MultiCondition extends Condition {
   List<SimpleCondition> _subConditions = [];

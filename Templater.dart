@@ -68,10 +68,11 @@ class Templater {
       List<Lexeme> lexemes = lexemeList(tplText);
       _tplTree = _builder.build(lexemes);
     //  print("isTree = ${_tplTree is TreeNode}");
-//      for(Lexeme lex in lexemes){
-//        //p("[${lex.type.toString()}:${lex.content}]");
-//        p(lex.content);
-//      }
+      for(Lexeme lex in lexemes){
+       // p("[${lex.type.toString()}:${lex.content.replaceAll(new RegExp(r'\n'), ' \\ ')}]");
+        //p(lex.content);
+      }
+     // p("****************************");
       // build tree of
     }catch(e, s){
       p(e);
