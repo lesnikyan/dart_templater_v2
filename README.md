@@ -8,14 +8,22 @@ What it is?
 It is a just simple hand-made templater with flexible syntax.
 
 Tmplr can:
+
 1. print value of variable: ' My name is {userName}!' => ' My name is Vasya!'
+
 2. execute blocks in cycle by lists: ' {for user in user} User {user.name} has {user.age} years old. '
+
 3. include logic block by 'if' sentence: ' {if x < 10 and user.name != "Vasya"} <div>Hello, {user.name}!</div> '
+
 4. handle simple var names and fields/getters of objects: {title} {user.name} {data.users.students.first.properties.name}
 	-- read sub-value from variable, like object's field.
 		But use Map as value in #Templater.put(name, value);# instead of real Class Object. Like JS.
 		Using of real class.fields seams to be too slow, because needs to use reflections.
+
 5. have comments: {# some comment }
+
 6. Change pattern of includes after running of Tmpltr: from {name} => <%name%> // TODO
+
 7. In each block all parent values exists, and every value requested by variable name will be returned from last possible definition.
+
 8. running methods - in possible plans. // TODO
