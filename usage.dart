@@ -9,12 +9,14 @@ void main(){
   //Template tpl = new Templater.fromString(template);
   tpl.put('title', 'Template usage');
   tpl.put({'test' : '123', 'conNum' : 20});
-  tpl.put('page.name', 'Test page');
+  tpl.put('page', {'name':'Test page'});
+  tpl.put('user2', {'name':'Ostap'});
   tpl.put('testWords', ['word_1', 'word_2', 'word_3', 'word_4']);
   //
   String html = tpl.render();
   print(html);
   // TODO:
+  // dot-separated key-values like user.name
   // multi-expression with one-operator: if true && x == 10
   // else, elseif
   // foreach Map

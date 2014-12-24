@@ -19,8 +19,8 @@
 {if conNum > 10}
 	<div>tested simple condition</div>
 {/}
-{if conNum > 10 && 10 < 20 && true}
-	<div>tested simple condition</div>
+{if conNum > 10 && 10 < 20 && true && user2.name == 'Ostap'}
+	<div>tested simple condition, user: {user2.name}</div>
 {/}
 {if 100 > 10}
 	<div>tested num:num condition</div>
