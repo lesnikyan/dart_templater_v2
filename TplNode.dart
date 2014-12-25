@@ -50,7 +50,7 @@ class ValueNode extends SyntaxNode {
   }
 }
 
-abstract class BlockNode extends SyntaxNode {
+class BlockNode extends SyntaxNode {
   List<SyntaxNode> _subNodes = new List<SyntaxNode>();
   BlockNode():super(true);
 

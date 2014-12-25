@@ -16,8 +16,8 @@ void main(){
   String html = tpl.render();
   print(html);
   // TODO:
-  // dot-separated key-values like user.name
-  // multi-expression with one-operator: if true && x == 10
+  // dot-separated key-values like user.name -done
+  // multi-expression with one-operator: if true && x == 10 -done
   // else, elseif
   // foreach Map
   // range(0, 10, 2)

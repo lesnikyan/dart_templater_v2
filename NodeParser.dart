@@ -56,7 +56,13 @@ class VarNodeParser extends NodeParser {
  * for end of block
  */
 class CloseBlockParser {
+  List<String> _closes = ['/', 'else'];
+
   bool check(Lexeme lex){
+    return _closes.contains(lex.content.trim());
+  }
+
+  bool simpleClose(Lexeme lex){
     return lex.content.trim() == '/';
   }
 }
@@ -87,7 +93,8 @@ class CycleNodeParser extends NodeParser {
  */
 class ConditionNodeParser extends NodeParser {
 
-  RegExp _checkExpr = new RegExp(r'^\s*if\s+\w+');
+  RegExp _checkExpr = new RegExp(r'^((if\s+\w+)|else)');
+  RegExp _commandExpr = new RegExp(r'\s*(if|else)\s*');
   RegExp _oneVarExpr = new RegExp(r'^[\w][\w\.]*$');
   RegExp _oneExpr = new RegExp(r'^[^|&]+$');
   String _simpleExprRule = r'([^=<>!&\|]+)\s+(==|!=|>|<|>=|<=)\s+([^=<>!&\|]+)';
@@ -107,12 +114,13 @@ class ConditionNodeParser extends NodeParser {
   }
 
   bool check(Lexeme lex){
-    return _checkExpr.hasMatch(lex.content);
+    return _checkExpr.hasMatch(lex.content.trim());
   }
 
   SyntaxNode getNode(Lexeme lex){
 
-    String syntaxPrefix = "if";
+    String syntaxPrefix = _commandExpr.firstMatch(lex.content).group(1);
+   // p("getNode: {${lex.content}} : ($syntaxPrefix) ");
     String expr = lex.content.trim().substring(syntaxPrefix.length).trim();
    // p("ConditionNodeParser. expr: $expr");
 
