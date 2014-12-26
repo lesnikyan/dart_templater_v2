@@ -5,13 +5,16 @@ class Parser {
   String startX = '{'; // chars open tag: {tag content ...
   String endX = '}';   // chars close tag: ... tag content}
   Strng tagShield = '\\'; // makes next placed chars open tag unavailable: \{not a tag}
+  RegExp _newLineExp = new RegExp(r'^\n$');
+  RegExp _controlExpr = new RegExp(r'^#\.*|if\s+|else|else\s+if|elseif|for\s+|\/');
 
 //  Parser(String tpl) {
 //
 //  }
 
   List<String> parse(String src){
-    List<String> res = new List<String>();
+    List<Lexeme> res = new List<Lexeme>();
+    src.replaceAll(_newLineExp, "\n");
     int len = src.length;
     int lastIndex = len - 1;
     String prefStart = startX.substring(0,0);
@@ -23,6 +26,8 @@ class Parser {
     bool inTag = false;
 
     String lexeme = "";
+    String lastCaret = -1;
+    RegExp spacesExp = new RegExp(r'^\s*$');
 
     while(curIndex < len){
     //  if(res.length > 20) break; // DEBUG ONLY
@@ -37,8 +42,35 @@ class Parser {
           // end tag
           lexeme += src.substring(curIndex, curIndex + endXLen);
           //p("$lexeme : ${lexeme.length}");
-          res.add(new TplLexeme(lexeme.substring(startXLen, lexeme.length - endXLen).trim())); // save tpl lexeme // .substring(startXLen, lexeme.length - endXLen - 1)
-          curIndex += endXLen;
+
+          // если оставшаяся часть строки пустая или содержит только пробельные символы,
+          // и предыдущая лексема была текстовой, содержала перенос строки
+          // и последняя её строка, после "каретки" была пустой или содержала только пробельные символы
+          // то 1) вырезать из предыдущей лексемы текущую строку, 2) передвинуть индекс на конец текущей строки
+          String lexExpression = lexeme.substring(startXLen, lexeme.length - endXLen).trim();
+          String prevLexPartIndex = res.last.content.lastIndexOf("\n");
+          bool singleString = false; // flag of single tag in line
+          if( prevLexPartIndex >= 0 && _controlExpr.hasMatch(lexExpression)){
+            int nextCaret = src.indexOf("\n", curIndex + endXLen);
+            String partToCaret = src.substring(curIndex + endXLen, nextCaret);
+          //  p("pr: prevPart: ${res.last.content.substring(prevLexPartIndex).replaceAll(new RegExp(r'\n'), ' \\n ')}");
+            if( prevLexPartIndex >= 0
+              && spacesExp.hasMatch(partToCaret)
+              && spacesExp.hasMatch(res.last.content.substring(prevLexPartIndex))
+            ){
+            //  p("Parser: prev: ${res.last.content.replaceAll(new RegExp(r'\n'), ' \\n ')}; next: ${lexeme.replaceAll(new RegExp(r'\n'), ' \\n ')}");
+              res.last.content = res.last.content.substring(0, prevLexPartIndex  );
+              singleString = true;
+              curIndex = nextCaret;
+            }
+          }
+
+          res.add(new TplLexeme(lexExpression)); // save tpl lexeme // .substring(startXLen, lexeme.length - endXLen - 1)
+
+          // move cursor if tag is not single in line
+          if (! singleString){
+            curIndex += endXLen;
+          }
           lexeme = ""; // clear tpl lexeme, start new lexeme
           inTag = false;
           continue;
@@ -69,7 +101,15 @@ class Parser {
         }
       }
 
-      lexeme += src.substring(curIndex, curIndex + 1);
+      // if no special cases:
+      lexeme += src[curIndex];// src.substring(curIndex, curIndex + 1);
+
+      // if new line, remember index
+      if(src[curIndex] == "\n"){
+        lastCaret = curIndex;
+      }
+      // if current = space-like text lexeme, and previously lex = tpl, and next prev has space-like last string
+
       curIndex++;
     }
     return res;

@@ -5,14 +5,14 @@
 </head>
 <body>
 <h1>{page.name}</h1>
-<div>
+<div class="test">
 	{test}
 </div>
-{for word in testWords}
-<div>
-	{index} ) {word}
-</div>
-{/}
+	{for word in testWords}
+	<div>
+		{index} ) {word}
+	</div>
+	{/}
 {if true}
 	<div>tested one true</div>
 {/}
@@ -20,13 +20,16 @@
 	<div>tested simple condition</div>
 {/}
 {if conNum > 10 && 10 < 20 && true && user2.name == 'Ostap'}
-	<div>tested simple condition, user: {user2.name}</div>
+<div>tested multi condition AND, user: {user2.name}</div>
+{/}
+{if conNum > 10 || 10 < 20 || true || user2.name == 'Ostap'}
+<div>tested multi condition OR, user: {user2.name}</div>
 {/}
 {if 100 > 10}
 	<div>tested num:num condition</div>
 {/}
 <div>after conditions</div>
- -= {title} =-
+ -= Title: {title} =-
 <div>
 {if false}
 	IF:then
@@ -35,6 +38,5 @@
 {/}
 </div>
 {# comment}
-
 </body>
 </html>

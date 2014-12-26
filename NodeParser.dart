@@ -36,6 +36,17 @@ class SimpleNodeParser extends NodeParser {
   }
 }
 
+class CommentNodeParser extends NodeParser {
+  RegExp _rule = new RegExp(r'^#\.*');
+
+  bool check(Lexeme lex){
+    return _rule.hasMatch(lex.content.trimLeft());
+  }
+  SyntaxNode getNode(Lexeme lex){
+    return new TextNode('');
+  }
+}
+
 /**
  * for variables: name, user.name, ets..
  */

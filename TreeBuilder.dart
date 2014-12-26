@@ -17,7 +17,9 @@ class TreeBuilder {
 
   void _init(){
     _parsers.addAll([
-        // first - complicated cases
+        // first - comments
+        new CommentNodeParser(),
+        // complicated cases
         new CycleNodeParser(), _condParser,
         // value case
         new VarNodeParser(),
