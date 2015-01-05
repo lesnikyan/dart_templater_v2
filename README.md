@@ -13,7 +13,7 @@ Tmplr can:
 
 2. execute blocks in cycle by lists: ' {for user in user} User {user.name} has {user.age} years old. '
 
-3. include logic block by 'if' sentence: ' {if x < 10 and user.name != "Vasya"} <div>Hello, {user.name}!</div> '
+3. include logic block by 'if' sentence: ' {if x < 10 and user.name != "Vasya"} Hello, {user.name}! {/} '
 
 4. handle simple var names and fields/getters of objects: {title} {user.name} {data.users.students.first.properties.name}
 	-- read sub-value from variable, like object's field.
@@ -22,7 +22,7 @@ Tmplr can:
 
 5. have comments: {# some comment }
 
-6. Change pattern of includes after running of Tmpltr: from {name} => <%name%> // TODO
+6. Change pattern of includes after running of Tmpltr: from {name} => <%name%>, use Templater.setSyntax(Map);
 
 7. In each block all parent values exists, and every value requested by variable name will be returned from last possible definition.
 

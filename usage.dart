@@ -36,7 +36,7 @@ void main(){
   <head><title><%title%></title></head>
   <body>
   <h1><%page.name%></h1>
-  <!<%pseudo tag %>
+  <!<%pseudo tag %> <%-- just a comment%>
   <%if hasCycle%>
     <%for name in names%>
     <% index %>) <% name %>

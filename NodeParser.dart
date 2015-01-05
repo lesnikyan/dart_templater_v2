@@ -37,7 +37,11 @@ class SimpleNodeParser extends NodeParser {
 }
 
 class CommentNodeParser extends NodeParser {
-  RegExp _rule = new RegExp(r'^#\.*');
+  RegExp _rule;
+
+  CommentNodeParser([String syntax = '#']){
+    _rule = new RegExp('^$syntax\\.*');
+  }
 
   bool check(Lexeme lex){
     return _rule.hasMatch(lex.content.trimLeft());

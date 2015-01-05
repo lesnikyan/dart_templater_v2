@@ -12,20 +12,26 @@ class TreeBuilder {
     'tagShield':'\\',
     'startTag':'{',
     'endTag':'}',
-    'closeTag':'/'
+    'closeTag':'/',
+    'comment':'#'
   };
   RegExp _tagShieldExpr;
-  List<NodeParser> _parsers = new List<NodeParser>();
+  List<NodeParser> _parsers;
   CloseBlockParser _closeParser = new CloseBlockParser();
   ConditionNodeParser _condParser = new ConditionNodeParser();
-  TreeBuilder() {
-    _init();
+
+  TreeBuilder([Map syntax]) {
+    _init(syntax);
   }
 
-  void _init(){
+  void _init([Map syntax]){
+    if(syntax != null){
+      _tplSyntax = syntax;
+    }
+    _parsers = new List<NodeParser>();
     _parsers.addAll([
         // first - comments
-        new CommentNodeParser(),
+        new CommentNodeParser(_tplSyntax['comment']),
         // complicated cases
         new CycleNodeParser(), _condParser,
         // value case
@@ -49,7 +55,7 @@ class TreeBuilder {
 
   void setSyntax(Map syntax){
     _tplSyntax = syntax;
-    _initSyntax();
+    _init();
   }
 
   SyntaxTree build(List<Lexeme> lexemes){

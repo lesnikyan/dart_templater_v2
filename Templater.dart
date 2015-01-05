@@ -29,7 +29,8 @@ class Templater {
       'tagShield': r'\',
       'startTag':'{',
       'endTag':'}',
-      'closeTag':'/'
+      'closeTag':'/',
+      'comment':'#'
   };
 
   Templater({String template, String file, Map data, Map syntax}) {
