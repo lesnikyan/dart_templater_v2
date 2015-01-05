@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<template-conf>
+	<tag-properties>
+		<open-tag>{</open-tag>
+		<close-tag>}</close-tag>
+	</tag-properties>
+	<block-properties>
+		<close-block>/</close-block>
+	</block-properties>
+</template-conf>

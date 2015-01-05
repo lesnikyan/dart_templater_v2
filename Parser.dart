@@ -12,6 +12,22 @@ class Parser {
 //
 //  }
 
+  void setParams(Map params){
+    if(params.containsKey('startTag')){
+      startX = params['startTag'];
+    }
+    if(params.containsKey('endTag')){
+      endX = params['endTag'];
+    }
+    if(params.containsKey('tagShield')){
+      tagShield = params['tagShield'];
+    }
+  }
+
+  Object _getFromMap(Map data, String key){
+    return data.containsKey(key) ? data[key] : null;
+  }
+
   List<String> parse(String src){
     List<Lexeme> res = new List<Lexeme>();
     src.replaceAll(_newLineExp, "\n");
@@ -50,10 +66,11 @@ class Parser {
           String lexExpression = lexeme.substring(startXLen, lexeme.length - endXLen).trim();
           String prevLexPartIndex = res.last.content.lastIndexOf("\n");
           bool singleString = false; // flag of single tag in line
-          if( prevLexPartIndex >= 0 && _controlExpr.hasMatch(lexExpression)){
-            int nextCaret = src.indexOf("\n", curIndex + endXLen);
+          int nextCaret = src.indexOf("\n", curIndex + endXLen);
+          if(nextCaret > 0 && prevLexPartIndex >= 0 && _controlExpr.hasMatch(lexExpression)){
+//            p("lexExpression = $lexExpression, curIndex = $curIndex, nextCaret = $nextCaret, lex = ${lexeme.replaceAll(new RegExp(r'\n'), ' \\n ')}");
+//            p("pr: prevPart: ${res.last.content.substring(prevLexPartIndex).replaceAll(new RegExp(r'\n'), ' \\n ')}");
             String partToCaret = src.substring(curIndex + endXLen, nextCaret);
-          //  p("pr: prevPart: ${res.last.content.substring(prevLexPartIndex).replaceAll(new RegExp(r'\n'), ' \\n ')}");
             if( prevLexPartIndex >= 0
               && spacesExp.hasMatch(partToCaret)
               && spacesExp.hasMatch(res.last.content.substring(prevLexPartIndex))
@@ -81,6 +98,7 @@ class Parser {
         if(curIndex < (len - emptyTagLen) // has enough length for shortest (empty) tag
           && src.substring(curIndex, curIndex + startXLen) == startX  //
           && (curIndex >= tagShield.length && src.substring(curIndex - tagShield.length, curIndex) != tagShield)  // prevent start tag when current char was shielded
+        // TODO: skip 'shield' a) in current lexeme, b) in previous lexeme
         ){
           // start tag, end prev text lexeme
           if(lexeme.length > 0){

@@ -4,7 +4,8 @@ import 'services.dart';
 void main(){
   print('Main: print');
   log('test');
-  Template tpl = new Templater.fromFile('usage_tpl.html');
+  Templater tpl = new Templater.fromFile('usage_tpl.html');
+  tpl.prepare();
   //String template = "<html><head><title>{#title#}</title></head><body><h1>{#page.name#}</h1></body></html>";
   //Template tpl = new Templater.fromString(template);
   tpl.put('title', 'Template usage');
@@ -15,13 +16,51 @@ void main(){
   //
   String html = tpl.render();
   print(html);
+
+  // Alternative syntax
+//  Map syntaxDefinitions = {
+//      'startTag' : '<tpl:',
+//      'endTag' : '>',
+//      'closeTag' : '/',
+//      'tagShield' : '<--',
+//      'comment' : 'comment'
+//  };
+  Map syntaxDefinitions = {
+      'startTag' : '<%',
+      'endTag' : '%>',
+      'closeTag' : '/',
+      'tagShield' : '<!',
+      'comment' : '--'
+  };
+  Templater altpl = new Templater.fromString(''' <html>
+  <head><title><%title%></title></head>
+  <body>
+  <h1><%page.name%></h1>
+  <!<%pseudo tag %>
+  <%if hasCycle%>
+    <%for name in names%>
+    <% index %>) <% name %>
+    <%/%>
+  <%/%></body></html> ''');
+  altpl.setSyntax(syntaxDefinitions);
+  altpl.prepare();
+
+  altpl.put('hasCycle', true);
+  altpl.put('title', 'Alter tpl usage');
+  altpl.put('page', {'name':'Alter syntax'});
+  altpl.put('names', ['Вася', 'Федя', 'Эдя']);
+
+  p(altpl.render());
+
   // TODO:
   // dot-separated key-values like user.name -done
   // multi-expression with one-operator: if true && x == 10 -done
-  // else, elseif
+  // else - done
+  // elseif
   // foreach Map
   // range(0, 10, 2)
   // userMethod(name)
+  // кеширование связанных функций?
 }
 
 class Page{

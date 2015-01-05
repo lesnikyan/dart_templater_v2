@@ -8,6 +8,7 @@ import 'TplNode.dart';
 import 'DataContext.dart';
 import 'TreeBuilder.dart';
 import 'services.dart';
+import 'package:xml/xml.dart';
 
 /**
  * Very Simple Dart Template Solution (VSDTS)
@@ -24,18 +25,31 @@ class Templater {
   TreeBuilder _builder = new TreeBuilder();
   TreeNode _tplTree;
   Encoding _encoding;
+  Map _tplSyntax = {
+      'tagShield': r'\',
+      'startTag':'{',
+      'endTag':'}',
+      'closeTag':'/'
+  };
 
-  Templater({String template:'', Map data}) {
+  Templater({String template, String file, Map data, Map syntax}) {
     // read file
-    tplText = "<html><head><title>{#title#}</title></head><body><h1>{#page.name#}</h1></body></html>";
+    //tplText = "<html><head><title>{title}</title></head><body><h1>{page.name}</h1></body></html>";
+    if(file != null){
+      this.fromFile(file, data, syntax);
+      return;
+    } else if (template != null){
+      this.fromString(template, data, syntax);
+      return;
+    }
     _init(data);
   }
 
-  Templater.fromString(String this.tplText, [Map data]){
-    _init(data);
+  Templater.fromString(String this.tplText, [Map data, Map syntax]){
+    _init(data, syntax);
   }
 
-  Templater.fromFile(String this.tplFile, [Map data]){
+  Templater.fromFile(String this.tplFile, [Map data, Map syntax]){
     // get text from file
     File file;
     try{
@@ -52,28 +66,27 @@ class Templater {
       log(s.toString());
       return;
     }
-    _init(data);
+    _init(data, syntax);
   }
 
-  void _init([Map data]){
+  void _init([Map data, Map syntax]){
     if(data == null){
       data = {};
     }
+    if(syntax is Map){
+      setSyntax(syntax);
+    }
+    parser = new Parser();
+    _context = new DataContext(data);
+
+  }
+
+  void prepare(){
     try{
-    //  p(tplText);
-    //  p("**************************************");
       // parse source to lexeme list
-      parser = new Parser();
-      _context = new DataContext(data);
       List<Lexeme> lexemes = lexemeList(tplText);
+      // build node tree
       _tplTree = _builder.build(lexemes);
-    //  print("isTree = ${_tplTree is TreeNode}");
-      for(Lexeme lex in lexemes){
-       // p("[${lex.type.toString()}:${lex.content.replaceAll(new RegExp(r'\n'), ' \\ ')}]");
-        //p(lex.content);
-      }
-     // p("****************************");
-      // build tree of
     }catch(e, s){
       p(e);
       p(s.toString());
@@ -82,6 +95,16 @@ class Templater {
 
   void setEncoding(Encoding enc){
     _encoding = enc;
+  }
+
+  void setSyntax(Map syntax){
+    for(String key in syntax.keys){
+      if(_tplSyntax.containsKey(key)){
+        _tplSyntax[key] = syntax[key];
+      }
+    }
+    parser.setParams(_tplSyntax);
+    _builder.setSyntax(_tplSyntax);
   }
 
   List<Lexeme> lexemeList(String tplCode){
@@ -99,10 +122,9 @@ class Templater {
 
 
   String render(){
-//    for(String k in _values.keys){
-//      p("$k => ${_values[k].toString()}");
-//    }
-//    return "in dev";
+    if(_tplTree == null){
+      prepare();
+    }
     return _tplTree.render(_context);
   }
 
