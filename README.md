@@ -13,7 +13,16 @@ Tmplr can:
 	prepared by Template.put(key, val) method.
 
 2. execute blocks in cycle by lists: 
-	' {for user in user} &lt;div>User {user.name} has {user.age} years old.&lt;/div> {/}'.
+	[dart: ] 
+		List &lt;User> users; 
+		// ... 
+		Template.put('userList', users); 
+	[/dart]
+	[tpl: ] 
+		{for user in userList} 
+			&lt;div>User {user.name} has {user.age} years old.&lt;/div> 
+		{/} 
+	[/tpl]
 	Each iteration has auto-generated {index} as local var.
 
 3. include logic block by 'if' sentence: 
