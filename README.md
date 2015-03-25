@@ -13,13 +13,13 @@ Tmplr can:
 	prepared by Template.put(key, val) method.
 
 2. execute blocks in cycle by lists: 
-	' {for user in user} User {user.name} has {user.age} years old. {/}'.
+	' {for user in user} &lt;div>User {user.name} has {user.age} years old.&lt;/div> {/}'.
 	Each iteration has auto-generated {index} as local var.
 
 3. include logic block by 'if' sentence: 
-	' {if x < 10 and user.name != "Vasya"} Hello, {user.name}! {/} '.
+	{if x < 10 and user.name != "Vasya"} Hello, {user.name}! {/}
 	conditions can use complicated expressions:
-	{if user.name == 'Vasya' && user.age > 20 && isAdmin}
+	{if user.name == 'Vasya' && user.age > 20 && isAdmin} [code of block] {/}
 	But only one type of connecting	 logic: && or ||. And without brackets.
 
 4. handle simple var names and fields/getters of objects: 
@@ -33,7 +33,7 @@ Tmplr can:
 5. have comments: {# some comment }
 
 6. Change pattern of includes after running of Tmpltr: 
-	from {name} => <%name%>, use Templater.setSyntax(Map);
+	from {name} => &lt;%name%&gt;, use Templater.setSyntax(Map);
 
 7. In each inserted block all parent variables exists, 
 	and every value requested by variable name will be returned from last possible definition.
