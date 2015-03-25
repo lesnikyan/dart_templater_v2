@@ -1,5 +1,6 @@
 Simple Dart Templater.
 Dev Version 2.
+[HTML-optimized version of readme]
 
 author: lessmember@gmail.com
 pseudonym: sergio.lesnik@gmail.com
@@ -26,7 +27,7 @@ Tmplr can:
 	Each iteration has auto-generated {index} as local var.
 
 3. include logic block by 'if' sentence: 
-	{if x < 10 and user.name != "Vasya"} Hello, {user.name}! {/}
+	{if x &lt; 10 and user.name != "Vasya"} Hello, {user.name}! {/}
 	conditions can use complicated expressions:
 	{if user.name == 'Vasya' && user.age > 20 && isAdmin} [code of block] {/}
 	But only one type of connecting	 logic: && or ||. And without brackets.
