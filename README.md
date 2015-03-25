@@ -8,7 +8,7 @@ What is it?
 It is a just simple hand-made templater with flexible syntax.
 
 Tmplr can:
-
+<pre>
 1. print value of variable: ' My name is {userName}!' => ' My name is Vasya!', prepared by Template.put(key, val) method.
 
 2. execute blocks in cycle by lists: ' {for user in user} User {user.name} has {user.age} years old. {/}'.
@@ -38,3 +38,4 @@ TODO:
 
 1. United elseif statement.
 2. Flexible values in simplest print expression {"print me"}, {123} instead of just prepared var names (like {user.name}).
+</pre>
